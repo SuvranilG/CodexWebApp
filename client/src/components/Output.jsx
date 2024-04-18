@@ -30,22 +30,23 @@ const Output = ({ editorRef, language }) => {
   };
 
   return (
+    
     <Box w="50%">
       {/* <Text mb={2} fontSize="lg">
         Output
       </Text> */}
       Output: &nbsp;&nbsp;&nbsp;&nbsp;
       <Button
-        variant="outline"
-        colorScheme="green"
-        mb={4}
-        isLoading={isLoading}
-        onClick={runCode}
-      >
-        Run Code
-      </Button>
+      variant="outline"
+      colorScheme="green"
+      mb={10}
+      isLoading={isLoading}
+      onClick={runCode}
+    >
+      Run Code
+    </Button>
       <Box
-        height="75vh"
+        height="98vh"
         p={2}
         color={isError ? "red.400" : ""}
         border="1px solid"
@@ -58,6 +59,8 @@ const Output = ({ editorRef, language }) => {
       </Box>
       
     </Box>
+    
+    
   );
 };
 export default Output;

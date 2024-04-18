@@ -25,17 +25,20 @@ const CodeEditor = () => {
   
 
   return (
-    <div className="flex">
-    <div className="menu">
-            <LanguageSelector  language={language} onSelect={onSelect}   />
-          </div>
-    <Box >
-
+    
+    
+    <Box className="">
+      <div className="menu">
+        <LanguageSelector  language={language} onSelect={onSelect}   />
+      </div>
       <HStack spacing={4}>
-
         <Box w="54%">
-          
+        
+
+          <div className="menu">
+          </div>
           <div className="editor">
+            
             <Editor 
               className="editor"
               options={{
@@ -53,12 +56,14 @@ const CodeEditor = () => {
             />
 
           </div>
+          
         </Box>
         <Output editorRef={editorRef} language={language} />
+
       </HStack>
 
     </Box>
-    </div>
+    
   );
 };
 export default CodeEditor;
