@@ -109,7 +109,7 @@ const EditorPage = () => {
                         {clients.map((client) => (
                             <Client
                                 key={client.socketId}
-                                username={client.username}
+                                username={location.state?.username==client.username?client.username+"(You)":client.username}
                                 className="client"
                             />
                         ))}
