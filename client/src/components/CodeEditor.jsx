@@ -54,7 +54,7 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
             // else{isSocket.current = true;}
         isSocket.current=true;
             
-          }, 0);
+          }, 10);
 
         });
 
@@ -78,8 +78,8 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
             if (code !== null) {
                 isSocket.current = true;
 
-                // setValue(code);
-                editorRef.current?.setValue(code);
+                setValue(code);
+                // editorRef.current?.setValue(code);
                 
             }
         });
