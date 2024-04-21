@@ -12,7 +12,7 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
   const editorRef = useRef();
   const [value, setValue] = useState("");
   const [language, setLanguage] = useState("javascript");
-  const isSocket = useRef(false);
+  const isSocket = useRef(false);//when false, the cursor stays at place after reemitting once
   let debounceTimer;
   
 
@@ -23,6 +23,8 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
 
   const onSelect = (language) => {
     setValue(CODE_SNIPPETS[language]);
+    //if set to true it reemits 3 times at the beginning and when set to false only reemits once in the beginning
+    isSocket.current = false;
     setLanguage(language);
   };
 
@@ -33,35 +35,38 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
 
   useEffect(() => {
     async function init() {
-          editorRef.current.onDidChangeModelContent((event) => {
+          editorRef.current.onDidChangeModelContent(() => {
           clearTimeout(debounceTimer);
           debounceTimer = setTimeout(() => {
           const code = editorRef.current.getValue();
           onCodeChange(code);
-          
-
-      // console.log(editorRef.current);
-      // console.log(event);
-
 
             // if (event.origin !== monaco.editor.TextChangeOrigin.ModelSetValue) {                      
-            // if(!isSocket.current) {
-              // if(event.changes[0].forceMoveMarkers===false){ 
+            if(!isSocket.current ) {
               socketRef.current.emit(ACTIONS.CODE_CHANGE, {
                   roomId,
                   code
               });
-              
-                
-            // }
-            // else{isSocket.current = false;}
+            console.log(editorRef.current);
+            // console.log(event);
+
+            }
+            // else{isSocket.current = true;}
+        isSocket.current=true;
             
-          }, 10);
+          }, 0);
+
         });
+
+
     }
     if(editorRef.current){
     init();
     }
+
+    return () => {
+     
+  };
     
 }, [editorRef.current]);
 
@@ -73,7 +78,8 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
             if (code !== null) {
                 isSocket.current = true;
 
-                setValue(code);
+                // setValue(code);
+                editorRef.current?.setValue(code);
                 
             }
         });
@@ -116,6 +122,7 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
               editorDidMount={handleEditorDidMount}
               value={value}
               onChange={(value) => {setValue(value)}}
+              onKeyDown={isSocket.current = false}
             />
 
           </div>
