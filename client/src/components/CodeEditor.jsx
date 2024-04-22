@@ -8,11 +8,11 @@ import ACTIONS from '../utils/actions';
 
 import './CssForComponents.scss'
 
-const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
+const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange }) => {
   const editorRef = useRef();
   const [value, setValue] = useState("");
   const [language, setLanguage] = useState("javascript");
-  const isSocket = useRef(false);//when false, the cursor stays at place after reemitting once
+  const isSocket = useRef(false);
   let debounceTimer;
   
 
@@ -23,9 +23,14 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
 
   const onSelect = (language) => {
     setValue(CODE_SNIPPETS[language]);
-    //if set to true it reemits 3 times at the beginning and when set to false only reemits once in the beginning
     isSocket.current = false;
     setLanguage(language);
+    onLangChange(language);
+    if(!isSocket.current ) {
+      socketRef.current.emit(ACTIONS.LANG_CHANGE, {
+          roomId,
+          language,
+      });}
   };
 
   
@@ -41,7 +46,6 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
           const code = editorRef.current.getValue();
           onCodeChange(code);
 
-            // if (event.origin !== monaco.editor.TextChangeOrigin.ModelSetValue) {                      
             if(!isSocket.current ) {
               socketRef.current.emit(ACTIONS.CODE_CHANGE, {
                   roomId,
@@ -51,7 +55,6 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
             // console.log(event);
 
             }
-            // else{isSocket.current = true;}
         isSocket.current=true;
             
           }, 10);
@@ -83,6 +86,15 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange }) => {
                 
             }
         });
+
+        socketRef.current.on(ACTIONS.LANG_CHANGE, ({ language}) => {
+          if (language !== null) {
+              isSocket.current = true;
+
+              setLanguage(language);
+              
+          }
+      });
     }
 
     return () => {

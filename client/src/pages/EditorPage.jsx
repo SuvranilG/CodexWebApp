@@ -15,6 +15,7 @@ import {
 const EditorPage = () => {
     const socketRef = useRef(null);
     const codeRef = useRef(null);
+    const langRef= useRef(null);
     const location = useLocation();
     const { roomId } = useParams();
     const reactNavigator = useNavigate();
@@ -51,6 +52,10 @@ const EditorPage = () => {
                         code: codeRef.current,
                         socketId,
                     });
+                    socketRef.current.emit(ACTIONS.LANG_CHANGE, {
+                        language: langRef.current,
+                        roomId,
+                    });
                 }
             );
 
@@ -72,6 +77,7 @@ const EditorPage = () => {
             socketRef.current.disconnect();
             socketRef.current.off(ACTIONS.JOINED);
             socketRef.current.off(ACTIONS.DISCONNECTED);
+            
         };
     }, []);
 
@@ -128,6 +134,9 @@ const EditorPage = () => {
                     roomId={roomId}
                     onCodeChange={(code) => {
                         codeRef.current = code;
+                    }}
+                    onLangChange={(lang) => {
+                        langRef.current = lang;
                     }}
                 />
             </div>
