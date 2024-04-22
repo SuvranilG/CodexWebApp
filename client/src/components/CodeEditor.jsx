@@ -8,11 +8,11 @@ import ACTIONS from '../utils/actions';
 
 import './CssForComponents.scss'
 
-const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange }) => {
+const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange,isSocket }) => {
   const editorRef = useRef();
   const [value, setValue] = useState("");
   const [language, setLanguage] = useState("javascript");
-  const isSocket = useRef(false);
+  // const isSocket = useRef(false);
   let debounceTimer;
   
 
@@ -31,6 +31,7 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange }) => {
           roomId,
           language,
       });}
+
   };
 
   
@@ -90,7 +91,6 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange }) => {
         socketRef.current.on(ACTIONS.LANG_CHANGE, ({ language}) => {
           if (language !== null) {
               isSocket.current = true;
-
               setLanguage(language);
               
           }
@@ -100,7 +100,7 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange }) => {
     return () => {
         socketRef.current.off(ACTIONS.CODE_CHANGE);
     };
-}, [socketRef.current]);
+}, [socketRef.current,language]);
   
 
   return (

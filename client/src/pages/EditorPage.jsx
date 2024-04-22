@@ -20,6 +20,7 @@ const EditorPage = () => {
     const { roomId } = useParams();
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
+    const isSocket = useRef(null);
 
     useEffect(() => {
         const init = async () => {
@@ -46,6 +47,7 @@ const EditorPage = () => {
                     if (username !== location.state?.username) {
                         toast.success(`${username} joined the room.`);
                         console.log(`${username} joined`);
+                        isSocket.current=false;
                     }
                     setClients(clients);
                     socketRef.current.emit(ACTIONS.SYNC_CODE, {
@@ -77,7 +79,7 @@ const EditorPage = () => {
             socketRef.current.disconnect();
             socketRef.current.off(ACTIONS.JOINED);
             socketRef.current.off(ACTIONS.DISCONNECTED);
-            
+
         };
     }, []);
 
@@ -138,6 +140,7 @@ const EditorPage = () => {
                     onLangChange={(lang) => {
                         langRef.current = lang;
                     }}
+                    isSocket={isSocket}
                 />
             </div>
             
