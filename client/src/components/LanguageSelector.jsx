@@ -21,7 +21,7 @@ const LanguageSelector = ({ language, onSelect }) => {
       {/* <Text mb={2} fontSize="lg">
         Language:
       </Text> */}
-      Language: &nbsp;&nbsp;&nbsp;&nbsp;
+      {/* Language: &nbsp;&nbsp;&nbsp;&nbsp; */}
       <Menu className="Menu">
         <MenuButton as={Button}> {language}</MenuButton>
         <MenuList bg="#110c1b">

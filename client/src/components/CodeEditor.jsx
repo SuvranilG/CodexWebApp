@@ -8,17 +8,19 @@ import ACTIONS from '../utils/actions';
 
 import './CssForComponents.scss'
 
-const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange,isSocket }) => {
+const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange }) => {
   const editorRef = useRef();
   const [value, setValue] = useState("");
   const [language, setLanguage] = useState("javascript");
-  // const isSocket = useRef(false);
+  const isSocket = useRef(true);
   let debounceTimer;
   
 
   const onMount = (editor) => {
     editorRef.current = editor;
     // editor.focus();
+    isSocket.current = true;
+
   };
 
   const onSelect = (language) => {
@@ -31,12 +33,15 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange,isSocket }) 
           roomId,
           language,
       });}
+    isSocket.current = true;
 
   };
 
   
   function handleEditorDidMount(_, editor) {
     editorRef.current = editor;
+    isSocket.current = true;
+
   }
 
   useEffect(() => {
@@ -58,7 +63,7 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange,isSocket }) 
             }
         isSocket.current=true;
             
-          }, 10);
+          }, 70);
 
         });
 
@@ -80,18 +85,18 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange,isSocket }) 
 
         socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code}) => {
             if (code !== null) {
-                isSocket.current = true;
-
                 setValue(code);
                 // editorRef.current?.setValue(code);
+                isSocket.current = true;
+
                 
             }
         });
 
         socketRef.current.on(ACTIONS.LANG_CHANGE, ({ language}) => {
           if (language !== null) {
-              isSocket.current = true;
-              setLanguage(language);
+            setLanguage(language);
+            isSocket.current = true;
               
           }
       });
@@ -123,7 +128,7 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange,isSocket }) 
               className="editor"
               options={{
                 minimap: {
-                  enabled: false,
+                  enabled: true,
                 },
               }}
               height="70vh"
@@ -134,7 +139,12 @@ const CodeEditor = ({ socketRef, roomId, onCodeChange, onLangChange,isSocket }) 
               editorDidMount={handleEditorDidMount}
               value={value}
               onChange={(value) => {setValue(value)}}
-              onKeyDown={isSocket.current = false}
+              onKeyDown={
+                setTimeout(() => {
+                  isSocket.current=false;
+                },0)
+              
+              }
             />
 
           </div>
